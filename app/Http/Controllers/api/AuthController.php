@@ -14,10 +14,10 @@ class AuthController extends Controller
     public function signup(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'email' => 'required|unique:users|email|string',
-            'password' => 'required|string'
+            "email" => "required|unique:users|email|string",
+            "username" => "required|unique:users|string",
+            "password" => "required|string",
         ]);
-
 
         if ($validator->fails()) {
             return customResponse()
@@ -29,6 +29,7 @@ class AuthController extends Controller
 
         User::create([
             "email" => $request->input("email"),
+            "username" => $request->input("username"),
             "password" => bcrypt($request->input("password")),
         ]);
 
@@ -63,10 +64,9 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'email' => 'required|string',
-            'password' => 'required|string'
+            "login" => "required|string",
+            "password" => "required|string",
         ]);
-
 
         if ($validator->fails()) {
             return customResponse()
@@ -76,8 +76,12 @@ class AuthController extends Controller
                 ->generate();
         }
 
+        $field = filter_var($request->input("login"), FILTER_VALIDATE_EMAIL)
+            ? "email"
+            : "username";
+
         $credentials = [
-            "email" => $request->input("email"),
+            $field => $request->input("login"),
             "password" => $request->input("password"),
         ];
 
@@ -92,7 +96,6 @@ class AuthController extends Controller
         $user = User::where("id", Auth::id())
             ->get()
             ->first();
-
 
         return customResponse()
             ->data([

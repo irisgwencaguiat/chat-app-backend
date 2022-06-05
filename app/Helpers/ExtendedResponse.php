@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Helpers;
 
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -14,23 +13,21 @@ class ExtendedResponse
 
     protected $code = 200;
 
-    protected $success = TRUE;
+    protected $success = true;
 
-    protected $message = '';
+    protected $message = "";
 
-    protected $slug = '';
+    protected $slug = "";
 
     protected $pagination = [];
 
-
-    public function __construct($data = NULL, $message = NULL)
+    public function __construct($data = null, $message = null)
     {
-
-        if (is_null($data) === FALSE) {
+        if (is_null($data) === false) {
             $this->data($data);
         }
 
-        if (is_null($message) === FALSE) {
+        if (is_null($message) === false) {
             $this->message($message);
         }
     }
@@ -46,7 +43,7 @@ class ExtendedResponse
     public function success($code = 200): ExtendedResponse
     {
         $this->code = $code;
-        $this->success = TRUE;
+        $this->success = true;
 
         return $this;
     }
@@ -55,7 +52,7 @@ class ExtendedResponse
     public function failed($code = 400): ExtendedResponse
     {
         $this->code = $code;
-        $this->success = FALSE;
+        $this->success = false;
 
         return $this;
     }
@@ -65,7 +62,7 @@ class ExtendedResponse
     public function unathorized(): ExtendedResponse
     {
         $this->code = 401;
-        $this->success = FALSE;
+        $this->success = false;
 
         return $this;
     }
@@ -74,7 +71,7 @@ class ExtendedResponse
     public function forbidden(): ExtendedResponse
     {
         $this->code = 403;
-        $this->success = FALSE;
+        $this->success = false;
 
         return $this;
     }
@@ -83,7 +80,7 @@ class ExtendedResponse
     public function notFound(): ExtendedResponse
     {
         $this->code = 404;
-        $this->success = FALSE;
+        $this->success = false;
 
         return $this;
     }
@@ -98,9 +95,9 @@ class ExtendedResponse
 
     public function message(string $value): ExtendedResponse
     {
-        if ($this->slug == '') {
+        if ($this->slug == "") {
             // set slug too
-            $this->slug = Str::slug($value, '_');
+            $this->slug = Str::slug($value, "_");
         }
 
         $this->message = $this->translateMessage($value);
@@ -111,22 +108,23 @@ class ExtendedResponse
     // implement a message translator based on slug given
     protected function translateMessage($fallback)
     {
-
         return $fallback;
     }
 
     public function data($value): ExtendedResponse
     {
-
-        if($value instanceof AnonymousResourceCollection){
+        if ($value instanceof AnonymousResourceCollection) {
             $value = $value->resource;
         }
 
-        if ($value instanceof Paginator || $value instanceof LengthAwarePaginator) {
+        if (
+            $value instanceof Paginator ||
+            $value instanceof LengthAwarePaginator
+        ) {
             // convert pagination to array
             $pagination = $value->toArray();
-            $data = $pagination['data'];
-            unset($pagination['data']);
+            $data = $pagination["data"];
+            unset($pagination["data"]);
 
             // separate them on two different array keys to create uniformity
             $this->pagination = $pagination;
@@ -145,13 +143,16 @@ class ExtendedResponse
 
     protected function generateResponse()
     {
-        return response()->json([
-            'success'     => $this->success,
-            'code'        => $this->code,
-            'slug'        => $this->slug,
-            'message'     => $this->message,
-            'data'        => $this->data,
-            'pagination'  => $this->pagination,
-        ], $this->code);
+        return response()->json(
+            [
+                "success" => $this->success,
+                "code" => $this->code,
+                "slug" => $this->slug,
+                "message" => $this->message,
+                "data" => $this->data,
+                "pagination" => $this->pagination,
+            ],
+            $this->code
+        );
     }
 }
