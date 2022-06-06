@@ -93,6 +93,6 @@ class ChatController extends Controller
             ->data($image)
             ->message("Image successfully created.")
             ->success()
-            ->generate();
+            ->generate(); // test
     }
 }
