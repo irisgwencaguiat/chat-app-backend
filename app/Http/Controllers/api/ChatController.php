@@ -4,7 +4,11 @@ namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Chat;
+use App\Models\Image;
+use App\Models\Upload;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class ChatController extends Controller
@@ -86,13 +90,12 @@ class ChatController extends Controller
 
     public function storeImage(Request $request)
     {
-        $image = $request->file("image");
-        $fileName = $image->getClientOriginalName();
-        $image->storeAs("/images", $fileName, "s3");
+        $file = $request->file("image");
+        $upload = Upload::create(["path" => $file])->fresh();
         return customResponse()
-            ->data($image)
+            ->data($upload)
             ->message("Image successfully created.")
             ->success()
-            ->generate(); // test
+            ->generate();
     }
 }

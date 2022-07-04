@@ -17,8 +17,14 @@ class CreateRoomMembersTable extends Migration
             $table->id();
             $table->timestamps();
             $table->softDeletes();
-            $table->foreignId("room_id")->constrained("rooms");
-            $table->foreignId("user_id")->constrained("users");
+            $table
+                ->foreignId("room_id")
+                ->constrained("rooms")
+                ->onDelete("cascade");
+            $table
+                ->foreignId("user_id")
+                ->constrained("users")
+                ->onDelete("cascade");
         });
     }
 

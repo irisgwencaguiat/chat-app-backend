@@ -17,10 +17,13 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+Route::apiResource("/upload", "api\UploadController");
 
 Route::prefix("auth")->group(function () {
     Route::post("/signup", [AuthController::class, "signup"]);
     Route::post("/login", [AuthController::class, "login"]);
+    Route::get("/export", [AuthController::class, "export"]);
+    Route::post("/import", [AuthController::class, "import"]);
 });
 
 Route::middleware("auth:api")
@@ -47,4 +50,5 @@ Route::middleware("auth:api")
     ->group(function () {
         Route::post("/", [ChatController::class, "store"]);
         Route::post("/images", [ChatController::class, "storeImage"]);
+        Route::get("/presigned-url", [ChatController::class, "presignedUrl"]);
     });
